@@ -1,0 +1,8 @@
+# Rust build output
+/target/
+
+# Local, never committed: downloaded vendor specs, credentials, local config
+/.cache/
+.env
+.env.*
+*.local.toml
