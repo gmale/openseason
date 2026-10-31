@@ -23,7 +23,7 @@
 
 - **Status:** active (2026-10-31)
 - **Frequency:** every change to `kb/`
-- **What happens:** The claude.ai project syncs `kb/` from this repository, but only when someone clicks the sync icon in the project's Context section. Until then, chats in the project read stale knowledge.
+- **What happens:** The claude.ai project syncs `kb/` from this repository, but only when someone triggers the sync by hand in the project's Context section, which takes several clicks. Until then, chats in the project read stale knowledge.
 - **Workaround:** After a push that touches `kb/`, click sync in the project. Claude should say so whenever it pushes `kb/` changes.
 - **Mitigation ideas (untested):** have Claude mirror changed `kb/` files into the project directly after each push; check whether the redesigned Projects experience, which clones repositories per session, removes the step.
 
@@ -47,6 +47,14 @@
 - **Frequency:** occasional
 - **What happens:** Help articles describe a "project knowledge" panel with a "+" menu, while the app labels the area "Context" and the steps differ. Instructions Claude gives from the docs can send the user looking for controls that have moved.
 - **Workaround:** When the interface doesn't match, describe what is on screen and adjust from there.
+
+### F-005 · Approval prompts interrupt long unattended runs
+
+- **Status:** active (2026-10-31)
+- **Frequency:** every long research or build session
+- **What happens:** Some steps pause for the maintainer's approval mid-run: attaching another repository, first use of a connector tool, browser setup and per-site browser permissions. A run meant to proceed unattended stalls until someone clicks through.
+- **Workaround:** Front-load the one-time approvals at the start of a session. In Claude in Chrome, use the "Automatically approve" permission mode and "Always allow actions on this site" for sites the project relies on. Claude avoids optional steps that trigger prompts, such as attaching extra repositories.
+- **Mitigation ideas (untested):** run long unattended work as a scheduled task with automatic approval; check whether individual plans gain per-tool "always allow" settings for connectors.
 
 ## Mitigated
 

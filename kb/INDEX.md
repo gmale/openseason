@@ -21,3 +21,6 @@ This is the entry point to openseason's knowledge base. Every knowledge file get
 ## Files
 
 - [`friction.md`](friction.md): agentic friction log; where building with AI is slower or more manual than it should be, with status and workarounds
+- [`platforms/skybox/onboarding.md`](platforms/skybox/onboarding.md): getting a Skybox seller account live on Vivid Seats; steps, gotchas, support mailboxes
+- [`platforms/skybox/webhooks.md`](platforms/skybox/webhooks.md): Skybox webhook subscriptions, topics, payload, signature, delivery guarantees, and what they mean for sale detection
+- [`platforms/vivid-seats/marketplace-rules.md`](platforms/vivid-seats/marketplace-rules.md): Vivid Seats large-seller rules that constrain listings (in-hand dates, day-of-event, masking, opt-in events)
