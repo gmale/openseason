@@ -34,7 +34,7 @@ The terms list prohibited uses (a) through (o). The ones that bear directly on o
 
 ## Design consequences
 
-1. **Skybox is the source of truth, not openseason.** openseason reads current state from Skybox when it needs it and does not persist it. Double-sale prevention across marketplaces is Skybox's job (its integrations with Vivid Seats, StubHub, and Ticketmaster+ exist for exactly this); openseason's job is to drive Skybox correctly.
+1. **Skybox is the source of truth, not openseason.** openseason reads current state from Skybox when it needs it and does not persist it. Double-sale prevention across marketplaces is Skybox's job (its integration with Vivid Seats and StubHub removes sold listings from the other exchange); openseason's job is to drive Skybox correctly.
 2. **What openseason may keep locally:** its own configuration (pricing rules, schedules, preferences) and its own audit log of the actions it took. Whether IDs and the values openseason itself sent count as "Skybox content" is an interpretation to confirm with Skybox before relying on it.
 3. **"One inventory, many outlets" works through Skybox,** which already distributes to multiple marketplaces. openseason should not aggregate Skybox data with direct integrations to other platforms.
 4. **Sales ledger and tax summary need care.** Building them by storing Skybox sales data conflicts with (a) and (b). Options: generate reports on demand from Skybox's own report endpoints without persisting them, or get written consent. Decide before building.

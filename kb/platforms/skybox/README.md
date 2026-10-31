@@ -6,7 +6,12 @@
 
 ## What Skybox is
 
-A free point-of-sale system run by Vivid Seats. Sellers keep inventory in Skybox; Skybox distributes listings to Vivid Seats and its integrated marketplaces and records sales. openseason's first platform adapter targets Skybox.
+A free point-of-sale system run by Vivid Seats. Sellers keep inventory in Skybox; Skybox distributes listings to marketplaces and records sales. openseason's first platform adapter targets Skybox.
+
+**Marketplace reach** ([What is SkyBox Integration?](https://skybox.zendesk.com/hc/en-us/articles/205525125), 2026-07):
+- Skybox's own integration lists directly on **Vivid Seats and StubHub only**.
+- Ticketmaster Resale is reachable through Vivid's Seller Fulfillment Services (SFS) program, and only for listings with barcodes attached in Skybox.
+- Any other marketplace requires a third-party automation provider.
 
 ## Files in this folder
 
@@ -30,6 +35,7 @@ Vivid Seats marketplace rules (in-hand dates, masking, event-day behavior) are i
 | **Sandbox** | None public. The spec lists a "Stage" server on an internal Vivid Seats corporate domain. Test with real but harmless listings: `broadcast: false`, far-future events, or a single low-stakes game |
 | **Paging** | List endpoints take `limit`, `pageNumber`, `sortDir`, `sortedBy`; responses are `{ rows, rowCount, totals }` |
 | **Errors** | `ApiErrorResponse` schema; shape to be confirmed on first real error |
+| **Dates** | ISO 8601 date-times with a timezone and 0–9 fractional-second digits, trailing zeros dropped (since 2023-09-26, per [the help center](https://skybox.zendesk.com/hc/en-us/articles/19133263848987)). Parse flexibly |
 
 The spec is public developer documentation. To use it in a session, download it to a git-ignored path rather than committing it:
 
@@ -46,6 +52,8 @@ mkdir -p .cache && curl -sf https://skybox.vividseats.com/services/openapi.json 
 | `X-Account` | The Skybox account ID | Shown in Skybox; the spec also has `GET /account` |
 
 All three are secrets. They come from environment variables or a git-ignored local config, never from the repository.
+
+Two more details, from Skybox's help center and third-party integration guides ([API invitations](https://skybox.zendesk.com/hc/en-us/articles/201450845), [Slash guide](https://help.slash.com/en/articles/9954246-connecting-your-skybox-account-to-slash)): an account can hold at most **five active API tokens**, and the invitation email reportedly carries both the account ID and the API token. [unverified first-hand]
 
 ## Rate limits
 
@@ -97,11 +105,15 @@ The API terms add overall caps: 600 requests per minute per IP and 2,500 per min
 | Invoice `fulfillmentStatus` | `PENDING`, `COMPLETE` |
 | Invoice `status` | `COMPLETED`, `UNFULFILLED_ORDER`, `MUTUAL_CANCELLATION`, `ORDER_VOID_CANCELLED`, `EVENT_CANCELLED`, `EVENT_RESCHEDULED`, `DELIVERY_FAILURE`, `TICKETS_ON_HOLD`, and others (see spec) |
 
+## Exchange-filter tags
+
+With Skybox's own integration, tags on a listing keep it off specific exchanges ([help center](https://skybox.zendesk.com/hc/en-us/articles/207212686)): `-vividseats` (or `-vivid`), `-stubhub`, `-ticketsnow` (also Ticketmaster Resale), `-SFS`, and `-all`. Changes take about two minutes to propagate. openseason should treat these tags as user-owned settings and never strip them.
+
 ## Open questions
 
 Each needs an answer from Skybox support or a careful first test before code depends on it.
 
-1. **Does `broadcast` control marketplace visibility?** Likely `true` = listed on integrated exchanges, `false` = held in Skybox only. Confirm, and confirm how long propagation takes.
+1. ~~Does `broadcast` control marketplace visibility?~~ **Answered** ([help center](https://skybox.zendesk.com/hc/en-us/articles/207811963), 2022): `broadcast: false` takes a listing down from every exchange and overrides everything else. `broadcast: true` lists it, but holds, exchange-filter tags, and a $0 list price still keep it off exchanges. Still to measure: how long propagation takes.
 2. **Is `listPrice` in the bulk price update absolute or a delta?** The spec's description reads like a delta ("amount to increase or decrease"), while the field name suggests absolute. Test on one listing.
 3. **Is `listPrice` per ticket?** Almost certainly, but confirm.
 4. **Does `PUT /inventory/{id}` replace or patch?** If it replaces, sending a partial object could wipe fields. Prefer the bulk price endpoint for price and broadcast changes until confirmed.
