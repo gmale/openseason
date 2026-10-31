@@ -20,4 +20,4 @@ This is the entry point to openseason's knowledge base. Every knowledge file get
 
 ## Files
 
-_(none yet)_
+- [`friction.md`](friction.md): agentic friction log; where building with AI is slower or more manual than it should be, with status and workarounds
